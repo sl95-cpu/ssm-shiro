@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0/EN "
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+
+<mapper namespace="com.jbit.mapper.SmbmsUserMapper">
+    <insert id="add" parameterType="SmbmsUser">
+        insert into  smbms.smbms_user
+        (userCode, userName, userPassword, gender, birthday, phone, address, userRole,createdBy,creationDate)
+         values(#{userCode}, #{userName}, #{userPassword}, #{gender}, #{birthday}, #{phone}, #{address},
+          #{userRole},#{createdBy},#{creationDate})
+    </insert>
+    <update id="modify" parameterType="SmbmsUser">
+        update smbms.smbms_user
+        <set>
+            <if test="userCode != null">
+                userCode = #{userCode},
+            </if>
+            <if test="userName != null">
+                userName = #{userName},
+            </if>
+            <if test="userPassword != null">
+                userPassword = #{userPassword},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="userRole != null">
+                userRole =#{userRole},
+            </if>
+            <if test="modifyBy != null">
+                modifyBy =#{modifyBy},
+            </if>
+            <if test="modifyDate != null">
+                modifyDate =#{modifyDate}
+            </if>
+            <where>
+                id = #{id}
+            </where>
+        </set>
+
+    </update>
+    <delete id="deleteUserById" parameterType="int">
+        delete from smbms.smbms_user where id =#{id};
+    </delete>
+
+    <select id="getLoginUser" resultMap="urn" parameterType="string">
+       select u.*,r.roleName from smbms.smbms_user u
+         inner join smbms.smbms_role r on(r.id=u.userRole) where userCode =#{userCode}
+
+    </select>
+    <select id="alUser" resultMap="urn" parameterType="map">
+        select u.*,r.roleName from smbms.smbms_user u
+         inner join smbms.smbms_role r on(r.id=u.userRole)
+        <where>
+            <if test="userRole != null  and userRole != ''">
+                and  u.userRole = #{userRole}
+            </if>
+            <if test="userName != null and userName != ''">
+                and  u.userName like CONCAT('%',#{userName},'%')
+            </if>
+        </where>
+    </select>
+    <select id="getUserById" resultType="SmbmsUser" parameterType="int">
+        select * from smbms.smbms_user where id=#{id}
+    </select>
+    <resultMap id="urn" type="SmbmsUser">
+        <id property="id" column="id"></id>
+        <result property="userRoleName" column="r.roleName"/>
+    </resultMap>
+</mapper>

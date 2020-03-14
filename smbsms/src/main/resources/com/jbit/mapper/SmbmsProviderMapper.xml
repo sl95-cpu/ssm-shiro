@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0/EN "
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+<mapper namespace="com.jbit.mapper.SmbmsProviderMapper">
+
+
+    <insert id="add" parameterType="smbmsProvider">
+        insert into smbms.smbms_provider(proCode,proName, proDesc,proContact, proPhone,proAddress,proFax,createdBy,creationDate)
+        values (#{proCode},#{proName},#{proDesc},#{proContact},#{proPhone},#{proAddress},#{proFax},#{createdBy},#{creationDate})
+    </insert>
+    <update id="modify" parameterType="smbmsProvider">
+        update smbms.smbms_provider
+        /*
+        prefix 前缀
+        suffix 后缀
+        suffixOverrides 去除 后缀前的(自定义) (一个)
+        prefixOverrides 去除 前缀后的(自定义) (一个)
+        */
+        <!--     <trim  prefix="set" suffix="where id = #{id}" prefixOverrides="" suffixOverrides=",">
+                <if test="proCode != null and proCode">
+                     proCode = #{proCode},
+               </if>
+           </trim>-->
+        <set>
+            <if test="proCode != null and proCode != ''">
+                proCode = #{proCode},
+            </if>
+            <if test="proName != null and proName != ''">
+                proName = #{proName},
+            </if>
+            <if test="proDesc != null and proDesc != ''">
+                proDesc = #{proDesc},
+            </if>
+            <if test="proContact != null and proContact != ''">
+                proContact = #{proContact},
+            </if>
+            <if test="proPhone != null and proPhone != ''">
+                proPhone = #{proPhone},
+            </if>
+            <if test="proAddress != null and proAddress != ''">
+                proAddress = #{proAddress},
+            </if>
+            <if test="proFax != null and proFax != ''">
+                proFax = #{proFax},
+            </if>
+            <if test="modifyDate != null and modifyDate != ''">
+                proFax = #{modifyDate},
+            </if>
+            <if test="modifyBy != null and modifyBy != ''">
+                modifyBy = #{modifyBy}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+    <delete id="deleteProviderById" parameterType="string">
+        delete from smbms.smbms_provider where id=#{id}
+    </delete>
+
+    <select id="getProviderList" resultType="SmbmsProvider" parameterType="map">
+        select id,proCode,proName,proContact, proPhone,proFax,creationDate,proDesc
+        from smbms.smbms_provider
+        <where>
+            <if test="proCode != null and proCode != ''">
+                and proCode = #{proCode}
+            </if>
+            <if test="proName != null and proName != ''">
+                and proName = #{proName}
+            </if>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+        </where>
+    </select>
+    <select id="getProvideLike" resultType="SmbmsProvider" parameterType="map">
+        select id,proCode,proName,proContact, proPhone,proFax,creationDate,proDesc
+        from smbms.smbms_provider
+        <where>
+        <if test="proCode != null and proCode != ''">
+            and proCode like concat('%',#{proCode},'%')
+        </if>
+        <if test="proName != null and proName != ''">
+            and proName like concat('%',#{proName},'%')
+        </if>
+        </where>
+    </select>
+</mapper>

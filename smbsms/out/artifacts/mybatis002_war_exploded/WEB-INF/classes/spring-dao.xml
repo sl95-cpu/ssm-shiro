@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans     https://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+<!--1.关联数据库配置文件-->
+<context:property-placeholder location="classpath:database.properties"/>
+
+        <!--连接池
+        dbcp: 半自动化 手动连接
+        cp30: 自动化操作 自动加载配置文件 ,并可以自动配置导对象中;
+        deuid:
+        hikart
+        -->
+        <!--2.连接池-->
+<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+<property name="driverClass" value="${jdbc.driver}"/>
+<property name="jdbcUrl" value="${jdbc.url}"/>
+<property name="user" value="${jdbc.username}"/>
+<property name="password" value="${jdbc.password}"/>
+</bean>
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+<property name="dataSource" ref="dataSource"></property>
+<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+</bean>
+
+    <!--4.配置dao接口扫描包,动态实现了Dao杰奎可以注入到Spring容器当中去-->
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+<!--注入 sqlSessionFactory-->
+<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+<!--要扫描的到包-->
+<property name="basePackage" value="com.jbit.mapper"/>
+</bean>
+</beans>

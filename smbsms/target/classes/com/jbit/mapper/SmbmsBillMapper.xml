@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0/EN "
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+<mapper namespace="com.jbit.mapper.SmbmsBillMapper">
+
+    <insert id="add" parameterType="smbmsBill">
+        insert into  smbms.smbms_bill(billCode, productName, productDesc, productUnit, productCount,
+         totalPrice, isPayment, createdBy, creationDate,providerId)
+        values (#{billCode}, #{productName}, #{productDesc}, #{productUnit}, #{productCount},
+         #{totalPrice}, #{isPayment}, #{createdBy}, #{creationDate},#{providerId})
+    </insert>
+    <update id="modify" parameterType="SmbmsBill">
+        update smbms.smbms_bill
+        <set>
+            <if test="billCode != null">
+                billCode = #{billCode},
+            </if>
+            <if test="productName != null">
+                productName = #{productName},
+            </if>
+            <if test="productDesc != null">
+                productDesc = #{productDesc},
+            </if>
+            <if test="productUnit != null">
+                productUnit = #{productUnit},
+            </if>
+            <if test="productCount != null">
+                productCount = #{productCount},
+            </if>
+            <if test="totalPrice != null">
+                totalPrice = #{totalPrice},
+            </if>
+            <if test="isPayment != null">
+                isPayment = #{isPayment},
+            </if>
+            <if test="modifyBy != null">
+                modifyBy = #{modifyBy},
+            </if>
+            <if test="modifyDate != null">
+                modifyDate = #{modifyDate},
+            </if>
+            <if test="providerId != null">
+                providerId = #{providerId}
+            </if>
+        </set>
+        <where>
+           id =#{id}
+        </where>
+    </update>
+    <delete id="deleteBillById" parameterType="string">
+        delete from  smbms.smbms_bill where id = #{id}
+    </delete>
+    <select id="allBill" resultType="smbmsBill">
+        select id,billCode, productName, productDesc, productUnit, productCount,
+         totalPrice, isPayment,providerId,creationDate
+          from smbms.smbms_bill
+    </select>
+    <select id="smbmsBillByProId" resultType="smbmsBill" parameterType="string">
+       SELECT billCode,productName,totalPrice,isPayment FROM smbms_bill where providerId = #{id}
+    </select>
+    <select id="getBillById" resultType="SmbmsBill" parameterType="string">
+        select id,billCode, productName, productDesc, productUnit, productCount,
+         totalPrice, isPayment,providerId,creationDate
+           from smbms.smbms_bill
+           <where>
+               id = #{=id}
+           </where>
+    </select>
+    <select id="getBillList" resultType="SmbmsBill" parameterType="map">
+          select id,billCode, productName, productDesc, productUnit, productCount,
+         totalPrice, isPayment,providerId,creationDate
+          from smbms.smbms_bill
+          <where>
+              <if test="queryProductName != null">
+                  and productName like concat('%',#{queryProductName},'%')
+              </if>
+              <if test="queryProviderId != null and queryProviderId != 0">
+                 and providerId = #{queryProviderId}
+              </if>
+              <if test="queryIsPayment != null and queryIsPayment != 0 ">
+                  and isPayment = #{queryIsPayment}
+              </if>
+              <if test="billCode != null">
+                  and billCode = #{billCode}
+              </if>
+          </where>
+    </select>
+</mapper>

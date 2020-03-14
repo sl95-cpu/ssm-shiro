@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0/EN "
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+<mapper namespace="com.jbit.mapper.SmbmsRoleMapper">
+    <update id="updateAole" parameterType="smbmsRole">
+      update smbms.smbms_role
+      <set>
+          <if test="roleCode != null">
+              roleCode = #{roleCode}
+          </if>
+          <if test="roleName != null">
+              roleName = #{roleName}
+          </if>
+          <if test="createdBy != null">
+              createdBy = #{createdBy}
+          </if>
+          <if test="creationDat != null">
+              creationDat = #{creationDat}
+          </if>
+          <if test="modifyBy != null">
+              modifyBy = #{modifyBy}
+          </if>
+          <if test="modifyDate != null">
+              modifyDate = #{modifyDate}
+          </if>
+      </set>
+      <where>
+          id = #{id}
+      </where>
+    </update>
+
+
+    <select id="allRole" resultType="smbmsRole">
+        select * from  smbms.smbms_role
+    </select>
+
+    <select id="selectRole" resultMap="SmbmsRoleMaps" parameterType="map">
+        select id,roleCode,roleName from smbms_role
+        <where>
+            <if test="ids!=null">
+                <foreach collection="ids" item="roleId" open="and id in(" close=")" separator=",">
+                    #{roleId}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+
+    <resultMap id="SmbmsRoleMaps" type="SmbmsRole">
+        <id property="id" column="r.id"></id>
+        <result property="roleCode" column="roleCode"></result>
+        <result property="roleName" column="roleName"></result>
+        <collection property="smbmsUsers" ofType="SmbmsUser" select="com.jbit.mapper.SmbmsUserMapper.userId" column="id" >
+        </collection>
+    </resultMap>
+</mapper>
